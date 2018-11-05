@@ -2,7 +2,6 @@ package com.egorova;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
 import net.miginfocom.swing.*;
@@ -44,24 +43,27 @@ public class HlavniOkno extends JFrame {
     }
 
 
-    private void priOtevreniOkna(WindowEvent event) {
+    private void whenWindowIsOpened(WindowEvent event) {
         labLevyHracScore.setLocation(contentPane.getWidth()/5,15);
         labPravyHracScore.setLocation(contentPane.getWidth() - contentPane.getWidth()/3, 15);
         labLevyHracScore.setText("Left Player: " + levyHracScore);
         labPravyHracScore.setText("Right Player: " + pravyHracScore);
-        startHry();
+        gameStart();
 
-        casovac = new Timer(50, e -> priStiskuPohniMicek(e));
+        casovac = new Timer(50, e -> moveBall());
         casovac.start();
+
+        moveBall();
+        playersMove();
     }
 
 
 
-    private void priZavreniOkna(WindowEvent e) {
+    private void whenWindowIsClosed(WindowEvent e) {
         casovac.stop();
     }
 
-    private void startHry(){
+    private void gameStart(){
          int y = contentPane.getHeight()/2- labLevyHrac.getHeight()/2;
          labMicek.setLocation(contentPane.getWidth()/2, contentPane.getHeight()/2);
          labLevyHrac.setLocation(0, ((20-y%20) +y));
@@ -78,26 +80,26 @@ public class HlavniOkno extends JFrame {
         return hrajeSe;
     }
 
-    public void pohybHracu(){
+    public void playersMove(){
         if (klavesnice.isKeyDown(KeyEvent.VK_UP)){ //sipka nahoru
-            pohniRobotem(-1, labPravyHrac);
+            moveRobot(-1, labPravyHrac);
         } else if (klavesnice.isKeyDown(KeyEvent.VK_DOWN)){//sipka dolu
-            pohniRobotem(1, labPravyHrac);
+            moveRobot(1, labPravyHrac);
         }
 
 
         if (klavesnice.isKeyDown(KeyEvent.VK_A)){ //A nahoru
-            pohniRobotem(-1, labLevyHrac);
+            moveRobot(-1, labLevyHrac);
         } else if (klavesnice.isKeyDown(KeyEvent.VK_Z)){//Z dolu
-            pohniRobotem(1, labLevyHrac);
+            moveRobot(1, labLevyHrac);
         }
     }
 
-    private void pohniMicek(){
+    private void moveBall(){
 
+            playersMove();
 
-
-            kontrolaScore();
+            checkScore();
 
             int x = labMicek.getX();
             int y = labMicek.getY();
@@ -123,7 +125,7 @@ public class HlavniOkno extends JFrame {
             }
 
             if (x + labMicek.getWidth() >= contentPane.getWidth()) {
-                startHry();
+                gameStart();
                 levyHracScore = levyHracScore + 1;
                 labLevyHracScore.setText("Left Player: " + Integer.toString(levyHracScore));
                 casovac.stop();
@@ -138,25 +140,17 @@ public class HlavniOkno extends JFrame {
             }
 
             if (x < 0) {
-                startHry();
+                gameStart();
                 pravyHracScore = pravyHracScore + 1;
                 labPravyHracScore.setText("Right Player: " + Integer.toString(pravyHracScore));
 
-                pauza();
+                //pauza();
                 return;
             }
     }
 
-    private void priStiskuPohniMicek(ActionEvent e) {
-            pohybHracu();
 
-        if (klavesnice.isKeyDown(KeyEvent.VK_ENTER) && hrajeSe) {
-            pohniMicek();
-        }                                                                
-
-    }
-
-    public void pohniRobotem(int smerY, JLabel komponenta) {
+    public void moveRobot(int smerY, JLabel komponenta) {
         int x = komponenta.getX();
         int y = komponenta.getY();
       
@@ -168,22 +162,7 @@ public class HlavniOkno extends JFrame {
         komponenta.setLocation(x, y + smerY * DELTA_Y);
     }
 
-    private void priStiskuKlavesy(KeyEvent e) {
 
-        if (e.getKeyCode()==KeyEvent.VK_UP){ //sipka nahoru
-            pohniRobotem(-1, labPravyHrac);
-        } else if (e.getKeyCode()==KeyEvent.VK_DOWN){//sipka dolu
-            pohniRobotem(1, labPravyHrac);
-        }
-
-
-        if (e.getKeyCode()==KeyEvent.VK_A){ //A nahoru
-            pohniRobotem(-1, labLevyHrac);
-        } else if (e.getKeyCode()==KeyEvent.VK_Z){//Z dolu
-            pohniRobotem(1, labLevyHrac);
-        }
-
-    }
 
     public boolean detekujiKolizi(JComponent komponenta1, JComponent komponenta2){
 
@@ -211,7 +190,7 @@ public class HlavniOkno extends JFrame {
         pauzovac.start();
     }*/
 
-    public void kontrolaScore(){
+    public void checkScore(){
         if (pravyHracScore >= SCORE || levyHracScore >= SCORE){
             casovac.stop();
 
@@ -247,18 +226,17 @@ public class HlavniOkno extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                priZavreniOkna(e);
+                whenWindowIsClosed(e);
             }
             @Override
             public void windowOpened(WindowEvent e) {
-                priOtevreniOkna(e);
+                whenWindowIsOpened(e);
             }
         });
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 pressEnterToContinue(e);
-                priStiskuKlavesy(e);
             }
         });
         Container contentPane = getContentPane();
