@@ -50,15 +50,14 @@ public class HlavniOkno extends JFrame {
         labPravyHracScore.setText("Right Player: " + pravyHracScore);
         gameStart();
         casovac = new Timer(50, e -> moveBall());
-        //casovac.start();
+        casovac.start();
 
-       // moveBall();
+        moveBall();
 
-        if (klavesnice.isKeyDown(KeyEvent.VK_ENTER)){
-        labStartHry.setVisible(false);
+        /*if (pressEnterToContinue()){
         casovac.start();
         moveBall();
-        }
+        }*/
 
     }
 
@@ -76,13 +75,13 @@ public class HlavniOkno extends JFrame {
     }
 
     private boolean pressEnterToContinue(){
-        labStartHry.setVisible(false);
         if (klavesnice.isKeyDown(KeyEvent.VK_ENTER)){
             hrajeSe = true;
-        } else {
-            hrajeSe=false;
+            labStartHry.setVisible(false);
+            return hrajeSe;
         }
-        return hrajeSe;
+            hrajeSe=false;
+            return hrajeSe;
     }
 
     public void playersMove(){
@@ -93,9 +92,9 @@ public class HlavniOkno extends JFrame {
         }
 
 
-        if (klavesnice.isKeyDown(KeyEvent.VK_A)){ //A nahoru
+        if (klavesnice.isKeyDown(KeyEvent.VK_W)){ //W nahoru
             moveRobot(-1, labLevyHrac);
-        } else if (klavesnice.isKeyDown(KeyEvent.VK_Z)){//Z dolu
+        } else if (klavesnice.isKeyDown(KeyEvent.VK_S)){//S dolu
             moveRobot(1, labLevyHrac);
         }
     }
