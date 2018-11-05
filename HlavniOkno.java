@@ -49,12 +49,17 @@ public class HlavniOkno extends JFrame {
         labLevyHracScore.setText("Left Player: " + levyHracScore);
         labPravyHracScore.setText("Right Player: " + pravyHracScore);
         gameStart();
-
         casovac = new Timer(50, e -> moveBall());
-        casovac.start();
+        //casovac.start();
 
+       // moveBall();
+
+        if (klavesnice.isKeyDown(KeyEvent.VK_ENTER)){
+        labStartHry.setVisible(false);
+        casovac.start();
         moveBall();
-        playersMove();
+        }
+
     }
 
 
@@ -70,9 +75,9 @@ public class HlavniOkno extends JFrame {
          labPravyHrac.setLocation(contentPane.getWidth()-labPravyHrac.getWidth(), ((20-y%20) +y));
     }
 
-    private boolean pressEnterToContinue(KeyEvent e){
-        System.out.println("press enter");
-        if (e.getKeyCode()== KeyEvent.VK_ENTER){
+    private boolean pressEnterToContinue(){
+        labStartHry.setVisible(false);
+        if (klavesnice.isKeyDown(KeyEvent.VK_ENTER)){
             hrajeSe = true;
         } else {
             hrajeSe=false;
@@ -98,7 +103,6 @@ public class HlavniOkno extends JFrame {
     private void moveBall(){
 
             playersMove();
-
             checkScore();
 
             int x = labMicek.getX();
@@ -207,6 +211,10 @@ public class HlavniOkno extends JFrame {
 
 
 
+
+
+
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -231,12 +239,6 @@ public class HlavniOkno extends JFrame {
             @Override
             public void windowOpened(WindowEvent e) {
                 whenWindowIsOpened(e);
-            }
-        });
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                pressEnterToContinue(e);
             }
         });
         Container contentPane = getContentPane();
