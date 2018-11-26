@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 import net.miginfocom.swing.*;
 import net.sevecek.util.swing.*;
+// kkkk
 
 public class HlavniOkno extends JFrame {
 
